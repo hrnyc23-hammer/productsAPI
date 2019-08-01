@@ -75,8 +75,7 @@ app.get('/products/:product_id', (req, res) => {
                     value: value
                 })
             }
-            res.status(200)
-            res.send(output)
+            res.status(200).send(output)
         }
     })
 })
