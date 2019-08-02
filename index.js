@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.get('/products/list', (req, res) => {
+    //console.time('list')
     let output = []
     let page = Number(req.query.page) || 1
     let count = Number(req.query.count) || 5
@@ -37,6 +38,7 @@ app.get('/products/list', (req, res) => {
                 productObj.default_price = price
                 output.push(productObj)
                 if (i === result.rows.length - 1) {
+                    //console.timeEnd('list')
                     res.send(output)
                 }
             }
@@ -45,6 +47,7 @@ app.get('/products/list', (req, res) => {
 })
 
 app.get('/products/:product_id', (req, res) => {
+    //console.time('product')
     let output = {}
     db.product(req.params.product_id, (err, result) => {
         if (err) {
@@ -75,12 +78,14 @@ app.get('/products/:product_id', (req, res) => {
                     value: value
                 })
             }
-            res.status(200).send(output)
+            //console.timeEnd('product')
+            res.send(output)
         }
     })
 })
 
 app.get('/products/:product_id/styles', (req, res) => {
+    //console.time('styles')
     let output = {}
     output.product_id = req.params.product_id
     output.results = []
@@ -126,6 +131,7 @@ app.get('/products/:product_id/styles', (req, res) => {
                                 }
                                 output.results.push(styleObj)
                                 if (i === result.rows.length - 1) {
+                                    //console.timeEnd('styles')
                                     res.send(output)
                                 }
                             }
