@@ -7,16 +7,6 @@ create table features(
 COPY features FROM 'C:\repo\sdc\sdc\features.csv' DELIMITER ',' CSV;
 COPY features FROM '/home/ubuntu/features.csv' DELIMITER ',' CSV;
 CREATE INDEX idx_features ON features(id);
-create table photos(
-    _id SERIAL PRIMARY KEY,
-    id INT NOT NULL,
-    styleId INT NOT NULL,
-    url VARCHAR,
-    thumbnail_url VARCHAR
-);
-COPY photos (id, styleId, url, thumbnail_url) FROM 'C:\repo\sdc\sdc\photos.csv' DELIMITER ',' CSV HEADER;
-COPY photos (id, styleId, url, thumbnail_url) FROM '/home/ubuntu/photos.csv' DELIMITER ',' CSV HEADER;
-CREATE INDEX idx_photos ON photos(styleId);
 create table product(
     id INT PRIMARY KEY,
     name VARCHAR (255),
@@ -28,23 +18,18 @@ create table product(
 COPY product FROM 'C:\repo\sdc\sdc\product.csv' DELIMITER ',' CSV HEADER;
 COPY product FROM '/home/ubuntu/product.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX idx_product ON product(id);
-create table skus(
-    id INT PRIMARY KEY,
-    styleID INT NOT NULL,
-    size VARCHAR (255),
-    quantity VARCHAR (255)
-);
-COPY skus FROM 'C:\repo\sdc\sdc\skus.csv' DELIMITER ',' CSV HEADER;
-COPY skus FROM '/home/ubuntu/skus.csv' DELIMITER ',' CSV HEADER;
-CREATE INDEX idx_skus ON skus(styleID);
+
+DROP TABLE styles, skus, photos;
 create table styles(
     id INT PRIMARY KEY,
-    productId INT NOT NULL,
+    productid INT NOT NULL,
     name VARCHAR (255),
     sale_price VARCHAR (255),
-    original_price VARCHAR (255),
-    default_style VARCHAR (255)
+    original_price VARCHAR( 255),
+    default_style VARCHAR (255),
+    skus VARCHAR,
+    photos VARCHAR
 );
-COPY styles FROM 'C:\repo\sdc\sdc\styles.csv' DELIMITER ',' CSV HEADER;
-COPY styles FROM '/home/ubuntu/styles.csv' DELIMITER ',' CSV HEADER;
-CREATE INDEX idx_styles ON styles(id);
+COPY styles FROM 'C:\repo\sdc\sdc\allStyles.csv' DELIMITER ',' CSV HEADER;
+COPY styles FROM '/home/ubuntu/allStyles.csv' DELIMITER ',' CSV HEADER;
+CREATE INDEX idx_styles ON styles(productid);
