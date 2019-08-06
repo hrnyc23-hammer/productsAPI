@@ -3,12 +3,14 @@ const bodyParser = require('body-parser')
 const atob = require('atob')
 const app = express()
 const db = require('./models.js')
+const path = require('path')
 const port = process.env.PORT || 8765
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
     extended: true
 }))
+app.use(express.static(path.join(__dirname, 'dist')))
 
 app.get('/products/list', (req, res) => {
     let output = []
@@ -102,11 +104,13 @@ app.get('/products/:product_id/styles', (req, res) => {
                 styleObj.sale_price = sale
                 styleObj.original_price = result.rows[i].original_price
                 styleObj['default?'] = parseInt(result.rows[i].default_style)
+                // console.time('atob')
                 styleObj.skus = JSON.parse(atob(result.rows[i].skus))
                 for (let key in styleObj.skus) {
                     styleObj.skus[key] = parseInt(styleObj.skus[key])
                 }
                 styleObj.photos = JSON.parse(atob(result.rows[i].photos)).photos
+                // console.timeEnd('atob')
                 output.results.push(styleObj)
                 if (i === result.rows.length - 1) {
                     res.send(output)
