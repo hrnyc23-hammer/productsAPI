@@ -64,18 +64,11 @@ app.get('/products/:product_id', (req, res) => {
             output.slogan = result.rows[0].slogan
             output.description = result.rows[0].description
             output.default_price = price
-            output.features = []
-            for (let item of result.rows) {
-                let value
+            output.features = JSON.parse(atob(result.rows[0].features)).features
+            for (let item of output.features) {
                 if (item.value === 'null') {
-                    value = ''
-                } else {
-                    value = item.value
+                    item.value = ''
                 }
-                output.features.push({
-                    feature: item.feature,
-                    value: value
-                })
             }
             res.send(output)
         }
@@ -104,13 +97,11 @@ app.get('/products/:product_id/styles', (req, res) => {
                 styleObj.sale_price = sale
                 styleObj.original_price = result.rows[i].original_price
                 styleObj['default?'] = parseInt(result.rows[i].default_style)
-                // console.time('atob')
                 styleObj.skus = JSON.parse(atob(result.rows[i].skus))
                 for (let key in styleObj.skus) {
                     styleObj.skus[key] = parseInt(styleObj.skus[key])
                 }
                 styleObj.photos = JSON.parse(atob(result.rows[i].photos)).photos
-                // console.timeEnd('atob')
                 output.results.push(styleObj)
                 if (i === result.rows.length - 1) {
                     res.send(output)

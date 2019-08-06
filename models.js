@@ -12,7 +12,7 @@ const pool = new Pool(config)
 module.exports = {
 
     product: (id, callback) => {
-        pool.query('SELECT * FROM product INNER JOIN features ON (product.id = features.product_id) WHERE product.id = $1', [id], (err, result) => {
+        pool.query('SELECT * FROM product WHERE product.id = $1', [id], (err, result) => {
             callback(err, result)
         })
     },
