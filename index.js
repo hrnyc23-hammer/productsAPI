@@ -55,7 +55,6 @@ app.get('/products/:product_id', (req, res) => {
             console.log('Error: ', err)
             res.sendStatus(500)
         } else {
-            console.log(resultr)
             if (resultr === null) {
                 db.product(req.params.product_id, (err, result) => {
                     if (err) {
@@ -118,7 +117,6 @@ app.get('/products/:product_id/styles', (req, res) => {
             console.log(err)
             res.sendStatus(500)
         } else {
-            console.log(resultr)
             if (resultr === null) {
                 db.style(req.params.product_id, (err, result) => {
                     if (err) {
