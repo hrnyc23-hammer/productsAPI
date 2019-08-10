@@ -20,28 +20,60 @@ app.get('/products/list', (req, res) => {
     let count = Number(req.query.count) || 5
     let start = ((page - 1) * count) + 1
     let end = ((page - 1) * count) + count
-    db.list(start, end, (err, result) => {
+    r.get(page + 'l' + count, (err, resultr) => {
         if (err) {
             console.log('Error: ', err)
             res.sendStatus(500)
         } else {
-            for (let i = 0; i < result.rows.length; i++) {
-                let productObj = {}
-                let price
-                if (parseInt(result.rows[i].default_price) == result.rows[i].default_price) {
-                    price = result.rows[i].default_price
-                } else {
-                    price = result.rows[i].default_price.split(' ')[1]
-                }
-                productObj.id = result.rows[i].id
-                productObj.name = result.rows[i].name
-                productObj.slogan = result.rows[i].slogan
-                productObj.description = result.rows[i].description
-                productObj.category = result.rows[i].category
-                productObj.default_price = price
-                output.push(productObj)
-                if (i === result.rows.length - 1) {
-                    res.send(output)
+            console.log(resultr)
+            if (resultr === null) {
+                db.list(start, end, (err, result) => {
+                    if (err) {
+                        console.log('Error: ', err)
+                        res.sendStatus(500)
+                    } else {
+                        r.set(page + 'l' + count, JSON.stringify(result))
+                        for (let i = 0; i < result.rows.length; i++) {
+                            let productObj = {}
+                            let price
+                            if (parseInt(result.rows[i].default_price) == result.rows[i].default_price) {
+                                price = result.rows[i].default_price
+                            } else {
+                                price = result.rows[i].default_price.split(' ')[1]
+                            }
+                            productObj.id = result.rows[i].id
+                            productObj.name = result.rows[i].name
+                            productObj.slogan = result.rows[i].slogan
+                            productObj.description = result.rows[i].description
+                            productObj.category = result.rows[i].category
+                            productObj.default_price = price
+                            output.push(productObj)
+                            if (i === result.rows.length - 1) {
+                                res.send(output)
+                            }
+                        }
+                    }
+                })
+            } else {
+                resultr = JSON.parse(resultr)
+                for (let i = 0; i < resultr.rows.length; i++) {
+                    let productObj = {}
+                    let price
+                    if (parseInt(resultr.rows[i].default_price) == resultr.rows[i].default_price) {
+                        price = resultr.rows[i].default_price
+                    } else {
+                        price = resultr.rows[i].default_price.split(' ')[1]
+                    }
+                    productObj.id = resultr.rows[i].id
+                    productObj.name = resultr.rows[i].name
+                    productObj.slogan = resultr.rows[i].slogan
+                    productObj.description = resultr.rows[i].description
+                    productObj.category = resultr.rows[i].category
+                    productObj.default_price = price
+                    output.push(productObj)
+                    if (i === resultr.rows.length - 1) {
+                        res.send(output)
+                    }
                 }
             }
         }
