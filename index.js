@@ -25,7 +25,6 @@ app.get('/products/list', (req, res) => {
             console.log('Error: ', err)
             res.sendStatus(500)
         } else {
-            console.log(resultr)
             if (resultr === null) {
                 db.list(start, end, (err, result) => {
                     if (err) {
