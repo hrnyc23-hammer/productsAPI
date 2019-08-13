@@ -5,7 +5,7 @@ const app = express()
 const db = require('./models.js')
 const path = require('path')
 const redis = require('redis')
-const r = redis.createClient(6379, '18.216.160.106')
+const r = redis.createClient(6379, '18.191.35.41')
 const port = process.env.PORT || 8765
 
 app.use(bodyParser.json())
@@ -168,11 +168,19 @@ app.get('/products/:product_id/styles', (req, res) => {
                             styleObj.sale_price = sale
                             styleObj.original_price = result.rows[i].original_price
                             styleObj['default?'] = parseInt(result.rows[i].default_style)
-                            styleObj.skus = JSON.parse(atob(result.rows[i].skus))
-                            for (let key in styleObj.skus) {
-                                styleObj.skus[key] = parseInt(styleObj.skus[key])
+                            if (Object.keys(JSON.parse(atob(result.rows[i].skus))).length === 0) {
+                                styleObj.skus = { null: null }
+                            } else {
+                                styleObj.skus = JSON.parse(atob(result.rows[i].skus))
+                                for (let key in styleObj.skus) {
+                                    styleObj.skus[key] = parseInt(styleObj.skus[key])
+                                }
                             }
-                            styleObj.photos = JSON.parse(atob(result.rows[i].photos)).photos
+                            if (JSON.parse(atob(result.rows[i].photos)).photos.length === 0) {
+                                styleObj.photos = [{ thumbnail_url: null, url: null }]
+                            } else {
+                                styleObj.photos = JSON.parse(atob(result.rows[i].photos)).photos
+                            }
                             output.results.push(styleObj)
                             if (i === result.rows.length - 1) {
                                 res.send(output)
@@ -195,11 +203,19 @@ app.get('/products/:product_id/styles', (req, res) => {
                     styleObj.sale_price = sale
                     styleObj.original_price = resultr.rows[i].original_price
                     styleObj['default?'] = parseInt(resultr.rows[i].default_style)
-                    styleObj.skus = JSON.parse(atob(resultr.rows[i].skus))
-                    for (let key in styleObj.skus) {
-                        styleObj.skus[key] = parseInt(styleObj.skus[key])
+                    if (Object.keys(JSON.parse(atob(resultr.rows[i].skus))).length === 0) {
+                        styleObj.skus = { null: null }
+                    } else {
+                        styleObj.skus = JSON.parse(atob(resultr.rows[i].skus))
+                        for (let key in styleObj.skus) {
+                            styleObj.skus[key] = parseInt(styleObj.skus[key])
+                        }
                     }
-                    styleObj.photos = JSON.parse(atob(resultr.rows[i].photos)).photos
+                    if (JSON.parse(atob(resultr.rows[i].photos)).photos.length === 0) {
+                        styleObj.photos = [{ thumbnail_url: null, url: null }]
+                    } else {
+                        styleObj.photos = JSON.parse(atob(resultr.rows[i].photos)).photos
+                    }
                     output.results.push(styleObj)
                     if (i === resultr.rows.length - 1) {
                         res.send(output)
